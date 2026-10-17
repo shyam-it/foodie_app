@@ -23,6 +23,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearCart() {
+    _cartItems.clear();
+    notifyListeners();
+  }
+
   void increaseQuantity(int foodId) {
     final index = _cartItems.indexWhere((item) => item['id'] == foodId);
 
