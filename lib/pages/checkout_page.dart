@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../providers/order_provider.dart';
 import '../providers/cart_provider.dart';
 
 class CheckoutPage extends StatelessWidget {
@@ -87,6 +87,17 @@ class CheckoutPage extends StatelessWidget {
                       if (cart.cartItems.isEmpty) {
                         return;
                       }
+
+                      final orderItems = cart.cartItems
+                          .map((item) => Map<String, dynamic>.from(item))
+                          .toList();
+
+                      final total = cart.totalPrice + 30;
+
+                      context.read<OrderProvider>().addOrder(
+                        items: orderItems,
+                        total: total,
+                      );
 
                       cart.clearCart();
 

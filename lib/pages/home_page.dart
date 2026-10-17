@@ -6,6 +6,7 @@ import 'view_all_page.dart';
 import 'cart_page.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import 'order_history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,43 +40,64 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.deepOrange,
         foregroundColor: Colors.white,
+
         actions: [
           Consumer<CartProvider>(
             builder: (context, cart, child) {
-              return Stack(
-                alignment: Alignment.center,
+              return Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.shopping_cart),
+                    icon: const Icon(Icons.receipt_long),
+                    tooltip: 'Order History',
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CartPage(),
+                          builder: (context) => const OrderHistoryPage(),
                         ),
                       );
                     },
                   ),
-                  if (cart.totalItems > 0)
-                    Positioned(
-                      right: 4,
-                      top: 4,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '${cart.totalItems}',
-                          style: const TextStyle(
-                            color: Colors.deepOrange,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
+
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.shopping_cart),
+                        tooltip: 'Cart',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CartPage(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      if (cart.totalItems > 0)
+                        Positioned(
+                          right: 4,
+                          top: 4,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${cart.totalItems}',
+                              style: const TextStyle(
+                                color: Colors.deepOrange,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                    ],
+                  ),
                 ],
               );
             },
