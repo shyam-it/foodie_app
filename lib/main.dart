@@ -3,13 +3,15 @@ import 'package:provider/provider.dart';
 import 'providers/order_provider.dart';
 import 'pages/home_page.dart';
 import 'providers/cart_provider.dart';
+import 'providers/wishlist_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: const MyApp(),
     ),

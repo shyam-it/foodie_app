@@ -7,6 +7,8 @@ import 'cart_page.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import 'order_history_page.dart';
+import '../providers/wishlist_provider.dart';
+import 'favorite_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,6 +49,18 @@ class _HomePageState extends State<HomePage> {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  IconButton(
+                    icon: const Icon(Icons.favorite),
+                    tooltip: 'My Favorites',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritePage(),
+                        ),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.receipt_long),
                     tooltip: 'Order History',
@@ -306,7 +320,29 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            Consumer<WishlistProvider>(
+                              builder: (context, wishlist, child) {
+                                final foodId = food['name'].toString();
+                                final isFavorite = wishlist.isFavorite(foodId);
 
+                                return Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: isFavorite
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      wishlist.toggleFavorite(foodId);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
                             const SizedBox(height: 8),
 
                             Row(
