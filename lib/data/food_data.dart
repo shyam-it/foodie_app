@@ -33,6 +33,6 @@ final List<Map<String, dynamic>> foodList = [
     'rating': 4.6,
     'category': 'Biryani',
     'image':
-        'https://images.unsplash.com/photo-1563379091339-03246963d96c?w=400',
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400',
   },
 ];
