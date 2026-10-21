@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await _authService.login(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
