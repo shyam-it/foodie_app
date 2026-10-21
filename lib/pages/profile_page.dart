@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../services/auth_service.dart';
 
@@ -12,7 +15,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController nameController = TextEditingController();
+  final ImagePicker picker = ImagePicker();
 
+  File? profileImage;
   bool isSaving = false;
 
   @override
@@ -25,6 +30,24 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> pickProfileImage() async {
+    try {
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (image != null && mounted) {
+        setState(() {
+          profileImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Could not select photo')));
+    }
   }
 
   Future<void> editProfile() async {
@@ -119,14 +142,29 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             const SizedBox(height: 30),
 
-            CircleAvatar(
-              radius: 55,
-              backgroundColor: Colors.deepOrange.shade100,
-              child: const Icon(
-                Icons.person,
-                size: 65,
-                color: Colors.deepOrange,
+            GestureDetector(
+              onTap: pickProfileImage,
+              child: CircleAvatar(
+                radius: 55,
+                backgroundColor: Colors.deepOrange.shade100,
+                backgroundImage: profileImage != null
+                    ? FileImage(profileImage!)
+                    : null,
+                child: profileImage == null
+                    ? const Icon(
+                        Icons.add_a_photo,
+                        size: 40,
+                        color: Colors.deepOrange,
+                      )
+                    : null,
               ),
+            ),
+
+            const SizedBox(height: 8),
+
+            const Text(
+              'Tap photo to change',
+              style: TextStyle(color: Colors.grey),
             ),
 
             const SizedBox(height: 20),
