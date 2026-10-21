@@ -9,7 +9,8 @@ import '../providers/cart_provider.dart';
 import 'order_history_page.dart';
 import '../providers/wishlist_provider.dart';
 import 'favorite_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -114,11 +115,16 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   IconButton(
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
+                    icon: const Icon(Icons.person),
+                    tooltip: 'My Profile',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePage(),
+                        ),
+                      );
                     },
-                    icon: const Icon(Icons.logout),
-                    tooltip: 'Logout',
                   ),
                 ],
               );
