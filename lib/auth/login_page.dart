@@ -12,7 +12,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -41,8 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
       if (!mounted) return;
 
-      // Successful login will be handled by the
-      // authentication state in main.dart.
+      // Successful login is handled by the authentication
+      // state in main.dart.
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
@@ -80,6 +79,66 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter your email first.')),
+      );
+      return;
+    }
+
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email.')),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'If an account exists for this email, '
+            'you will receive a password reset email.',
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      String message;
+
+      switch (e.code) {
+        case 'invalid-email':
+          message = 'Please enter a valid email.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many attempts. Try again later.';
+          break;
+        default:
+          message = 'Unable to send reset email. Please try again.';
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong. Please try again.'),
+        ),
+      );
+    }
+  }
+
   void _openSignup() {
     Navigator.pushNamed(context, '/signup');
   }
@@ -114,6 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 28),
 
+                // Email field
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -122,17 +182,6 @@ class _LoginPageState extends State<LoginPage> {
                     prefixIcon: Icon(Icons.email_outlined),
                     border: OutlineInputBorder(),
                   ),
-                  // validator: (value) {
-                  //   if (value == null || value.trim().isEmpty) {
-                  //     return 'Please enter your email';
-                  //   }
-                  //   if (!RegExp(
-                  //     r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                  //   ).hasMatch(value.trim())) {
-                  //     return 'Please enter a valid email';
-                  //   }
-                  //   return null;
-                  // },
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email';
@@ -149,6 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16),
 
+                // Password field
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _hidePassword,
@@ -171,11 +221,23 @@ class _LoginPageState extends State<LoginPage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
+
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
 
+                // Forgot Password button
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _forgotPassword,
+                    child: const Text('Forgot Password?'),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Login button
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
@@ -191,6 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 16),
 
+                // Sign Up button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
