@@ -89,6 +89,10 @@ class ProfilePage extends StatelessWidget {
                   if (shouldLogout == true) {
                     try {
                       await AuthService().logout();
+
+                      if (!context.mounted) return;
+
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     } catch (e) {
                       if (!context.mounted) return;
 
