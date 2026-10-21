@@ -122,15 +122,28 @@ class _LoginPageState extends State<LoginPage> {
                     prefixIcon: Icon(Icons.email_outlined),
                     border: OutlineInputBorder(),
                   ),
+                  // validator: (value) {
+                  //   if (value == null || value.trim().isEmpty) {
+                  //     return 'Please enter your email';
+                  //   }
+                  //   if (!RegExp(
+                  //     r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                  //   ).hasMatch(value.trim())) {
+                  //     return 'Please enter a valid email';
+                  //   }
+                  //   return null;
+                  // },
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email';
                     }
+
                     if (!RegExp(
                       r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
                     ).hasMatch(value.trim())) {
                       return 'Please enter a valid email';
                     }
+
                     return null;
                   },
                 ),
